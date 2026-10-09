@@ -1,4 +1,4 @@
-"""Config flow et Options flow avec Bot Token."""
+"""Config flow et Options flow pour KNX Telegram Notifier."""
 
 import voluptuous as vol
 
@@ -41,42 +41,43 @@ class KnxTelegramConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
   @staticmethod
   @callback
   def async_get_options_flow(config_entry):
-    return KnxTelegramOptionsFlowHandler(config_entry)
+    return KnxTelegramOptionsFlowHandler()
 
 
 class KnxTelegramOptionsFlowHandler(config_entries.OptionsFlow):
-  """Options flow pour reconfigurer sans redémarrage."""
-
-  def __init__(self, config_entry):
-    self.config_entry = config_entry
+  """Options flow corrigé pour éviter l'erreur 500."""
 
   async def async_step_init(self, user_input=None):
     if user_input is not None:
       return self.async_create_entry(title="", data=user_input)
 
-    opts = {**self.config_entry.data, **self.config_entry.options}
+    # Récupération sécurisée depuis self.config_entry
+    current_config = {**self.config_entry.data, **self.config_entry.options}
 
     schema = vol.Schema({
         vol.Required(
             CONF_GROUP_ADDRESSES,
-            default=opts.get(CONF_GROUP_ADDRESSES, ""),
+            default=str(current_config.get(CONF_GROUP_ADDRESSES, "")),
         ): str,
         vol.Optional(
             CONF_BOT_TOKEN,
-            default=opts.get(CONF_BOT_TOKEN, ""),
+            default=str(current_config.get(CONF_BOT_TOKEN, "")),
         ): str,
         vol.Required(
-            CONF_CHAT_ID, default=opts.get(CONF_CHAT_ID, "")
+            CONF_CHAT_ID, default=str(current_config.get(CONF_CHAT_ID, ""))
         ): str,
         vol.Optional(
             CONF_PAYLOAD_TRIGGER,
-            default=opts.get(CONF_PAYLOAD_TRIGGER, 1),
+            default=int(current_config.get(CONF_PAYLOAD_TRIGGER, 1)),
         ): int,
         vol.Optional(
             CONF_MESSAGE,
-            default=opts.get(
-                CONF_MESSAGE, "🚨 Alarme KNX reçue sur {address}"
+            default=str(
+                current_config.get(
+                    CONF_MESSAGE, "🚨 Alarme KNX reçue sur {address}"
+                )
             ),
         ): str,
     })
+
     return self.async_show_form(step_id="init", data_schema=schema)
