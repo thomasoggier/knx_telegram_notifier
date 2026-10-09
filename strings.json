@@ -1,0 +1,31 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Ajouter une alerte KNX vers Telegram",
+        "data": {
+          "name": "Nom de l'alerte",
+          "group_addresses": "Adresses de groupe KNX (séparées par une virgule)",
+          "bot_token": "Bot Token Telegram (Optionnel si configuré globalement)",
+          "chat_id": "Chat ID Telegram",
+          "payload_trigger": "Payload déclencheur (ex: 1)",
+          "message": "Template du message Telegram"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Modifier l'alerte KNX",
+        "data": {
+          "group_addresses": "Adresses de groupe KNX (séparées par une virgule)",
+          "bot_token": "Bot Token Telegram (Optionnel)",
+          "chat_id": "Chat ID Telegram",
+          "payload_trigger": "Payload déclencheur",
+          "message": "Template du message Telegram"
+        }
+      }
+    }
+  }
+}
